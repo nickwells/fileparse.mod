@@ -23,8 +23,8 @@ func FixFileName(fileName string) (string, error) {
 	return fixedFileName, err
 }
 
-// ExpandTilde will take the tilda-prefixed name and convert it into the
-// user's home directory. As in the Unix bash shell a tilda on its own
+// ExpandTilde will take the tilde-prefixed name and convert it into the
+// user's home directory. As in the Unix bash shell a '~' on its own
 // represents the home directory of the user running the code and with a
 // following name it represents the home directory of the named user.
 func ExpandTilde(tildeStr string) (string, error) {
