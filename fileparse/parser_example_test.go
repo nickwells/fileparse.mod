@@ -2,9 +2,9 @@ package fileparse_test
 
 import "github.com/nickwells/fileparse.mod/fileparse"
 
-// ExampleParser1 this demonstrates how the parsing will scan through various
-// files, ignoring comments and blank lines and following includes
-func ExampleParser1() {
+// ExampleFP_Parse this demonstrates how the parsing will scan through
+// various files, ignoring comments and blank lines and following includes
+func ExampleFP_Parse() {
 	p := fileparse.New("an example parser", fileparse.EchoParser{})
 	p.Parse("testdata/example/startingFile")
 	// Output: first content line
@@ -18,12 +18,12 @@ func ExampleParser1() {
 	// last line
 }
 
-// ExampleParser2 this demonstrates how the parsing will scan through various
-// files, ignoring comments and blank lines. The include keyword has been set
-// to the empty string and so no include directives are recognised; hence
-// they are not followed and the lines are not subject to any special
-// handling.
-func ExampleParser2() {
+// ExampleFP_SetInclKeyWord this demonstrates how the parsing will scan
+// through various files, ignoring comments and blank lines. The include
+// keyword has been set to the empty string and so no include directives are
+// recognised; hence they are not followed and the lines are not subject to
+// any special handling.
+func ExampleFP_SetInclKeyWord() {
 	p := fileparse.New("an example parser", fileparse.EchoParser{})
 	p.SetInclKeyWord("")
 	p.Parse("testdata/example/startingFile")
@@ -34,11 +34,11 @@ func ExampleParser2() {
 	// last line
 }
 
-// ExampleParser3 this demonstrates how the parsing will scan through various
-// files, ignoring blank lines. The include keyword and the comment intro
-// have been set to the empty string and so no include directives are
-// recognised and no text is treated as a comment.
-func ExampleParser3() {
+// ExampleFP_SetCommentIntro this demonstrates how the parsing will scan
+// through various files, ignoring blank lines. The include keyword and the
+// comment intro have been set to the empty string and so no include
+// directives are recognised and no text is treated as a comment.
+func ExampleFP_SetCommentIntro() {
 	p := fileparse.New("an example parser", fileparse.EchoParser{})
 	p.SetInclKeyWord("")
 	p.SetCommentIntro("")

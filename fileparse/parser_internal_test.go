@@ -60,39 +60,41 @@ func TestStripComment(t *testing.T) {
 	}
 
 	testCases1 := []commentTest{
-		{"abc // test", "abc"},
-		{" // test", ""},
-		{"   ", ""},
-		{"abc ", "abc"},
+		{"abc // test", "abc "},
+		{" // test", " "},
+		{"   ", "   "},
+		{"abc ", "abc "},
 	}
 
 	for _, ct := range testCases1 {
 		strippedLine := fpNull.stripComment(ct.line)
 
 		if strippedLine != ct.expectedLine {
-			t.Error("stripComment(", ct.line, ") failed\n",
-				"expected the stripped line to be: '", ct.expectedLine, "'\n",
-				"got: '", strippedLine, "'")
+			t.Logf("stripComment(%s)", ct.line)
+			t.Logf("\t: expected: '%s'", ct.expectedLine)
+			t.Logf("\t:      got: '%s'", strippedLine)
+			t.Error("\t: Failed")
 		}
 	}
 
 	fpNull.SetCommentIntro("#")
 	testCases2 := []commentTest{
 		{"abc // test", "abc // test"},
-		{" // test", "// test"},
-		{"abc # test", "abc"},
-		{" # test", ""},
-		{"   ", ""},
-		{"abc ", "abc"},
+		{" // test", " // test"},
+		{"abc # test", "abc "},
+		{" # test", " "},
+		{"   ", "   "},
+		{"abc ", "abc "},
 	}
 
 	for _, ct := range testCases2 {
 		strippedLine := fpNull.stripComment(ct.line)
 
 		if strippedLine != ct.expectedLine {
-			t.Error("stripComment(", ct.line, ") failed\n",
-				"expected the stripped line to be: '", ct.expectedLine, "'\n",
-				"got: '", strippedLine, "'")
+			t.Logf("stripComment(%s)", ct.line)
+			t.Logf("\t: expected: '%s'", ct.expectedLine)
+			t.Logf("\t:      got: '%s'", strippedLine)
+			t.Error("\t: Failed")
 		}
 	}
 }

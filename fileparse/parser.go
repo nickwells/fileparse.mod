@@ -28,6 +28,9 @@ type FP struct {
 	cmtIntro    string
 	inclKeyWord string
 
+	passBlanks bool
+	dontTrim   bool
+
 	stats Stats
 }
 
@@ -45,6 +48,19 @@ func New(desc string, lp LineParser) *FP {
 		inclKeyWord: DefaultInclKeyWord}
 }
 
+// PassBlankLines will change the behaviour of the Parser so that blank lines
+// are passed to the LineParser
+func (fp *FP) PassBlankLines() {
+	fp.passBlanks = true
+}
+
+// DontTrimWhiteSpace will change the behaviour of the Parser so that
+// white-space is no longer trimmed from the front and back of lines passed
+// to the LineParser
+func (fp *FP) DontTrimWhiteSpace() {
+	fp.dontTrim = true
+}
+
 // SetCommentIntro changes the comment introducer from the default value. A
 // comment is taken to run from the start of the comment introducer to the
 // end of the line. Setting the comment introducer to the empty string will
@@ -60,16 +76,24 @@ func (fp *FP) SetInclKeyWord(incl string) {
 	fp.inclKeyWord = incl
 }
 
-// stripComments will remove any comments. That is the text from the start of
-// a comment as given by the comment intro to the end of the line. It also
-// removes any white space from the beginning or end of the line
+// stripComment will remove comments. All text from the start of a comment as
+// given by the comment intro to the end of the line is removed.
 func (fp FP) stripComment(s string) string {
 	if fp.cmtIntro == "" {
-		return strings.TrimSpace(s)
+		return s
 	}
 
 	parts := strings.SplitN(s, fp.cmtIntro, 2)
-	return strings.TrimSpace(parts[0])
+	return parts[0]
+}
+
+// trimSpace will remove any white space from the beginning or end of the
+// line
+func (fp FP) trimSpace(s string) string {
+	if fp.dontTrim {
+		return s
+	}
+	return strings.TrimSpace(s)
 }
 
 // isAnInclLine returns the include file name and a bool indicating whether
@@ -90,12 +114,17 @@ func (fp FP) isAnInclLine(line string) (inclFileName string, hasIncl bool) {
 	return inclFileName, hasIncl
 }
 
-// Parse will read the passed file, following include directives (and checking
-// for loops). It will strip out any blank lines and comments, strip any white
-// space from the front and back of the line and call the LineParser on any
-// remaining text. It is the responsibility of the LineParser to perform any
-// operations resulting from the parsed lines. Any errors detected will be
-// returned. Note that more than one error is possible.
+// Parse will read the passed file, following include directives (and
+// checking for loops). It will strip out any blank lines and comments, strip
+// any white space from the front and back of the line and call the
+// LineParser on any remaining text. It is the responsibility of the
+// LineParser to perform any operations resulting from the parsed lines.
+//
+// This default behaviour can be changed by setting the include prefix, the
+// comment introducer and the blank line and white-space trimming behaviour.
+//
+// Any errors detected will be returned. Note that more than one error is
+// possible.
 func (fp *FP) Parse(filename string) []error {
 	fp.stats = Stats{} // reset the stats each time we parse
 	inclChain := location.NewChain()
@@ -156,7 +185,10 @@ func (fp *FP) parseFile(filename string, inclChain location.LocChain) []error {
 		loc.Incr()
 
 		line := fp.stripComment(originalLine)
-		if line == "" {
+
+		line = fp.trimSpace(line)
+
+		if line == "" && !fp.passBlanks {
 			continue // ignore blank lines
 		}
 
