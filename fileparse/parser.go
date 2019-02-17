@@ -17,7 +17,7 @@ import (
 // this to the end of the line is ignored
 const (
 	DefaultInclKeyWord  string = "#include"
-	DefaultCommentIntro        = "//"
+	DefaultCommentIntro string = "//"
 )
 
 // FP records the configuration of the file parser
@@ -150,31 +150,46 @@ func (fp *FP) noteStr(inclChain location.LocChain) string {
 	return note
 }
 
-// parseFile
-func (fp *FP) parseFile(filename string, inclChain location.LocChain) []error {
-	var errors = make([]error, 0)
-
+// openFile normalises the file name and checks the include chain for
+// loops. Then it creates a new location object and opens the file. Any
+// errors are returned.
+func (fp *FP) openFile(filename string, inclChain location.LocChain) (
+	*os.File, *location.L, error) {
 	fixedFileName, err := FixFileName(filename)
 	if err != nil {
-		return append(errors,
-			fmt.Errorf("%s: Couldn't expand: '%s' : %s",
-				fp.noteStr(inclChain), filename, err.Error()))
+		return nil, nil, fmt.Errorf("%s: Couldn't expand: '%s' : %s",
+			fp.noteStr(inclChain), filename, err.Error())
 	}
-	loc := location.New(fixedFileName)
-	loc.SetNote(fp.noteStr(inclChain))
 
 	loopFound, loopMsg := inclChain.HasLoop(fixedFileName)
 	if loopFound {
-		return append(errors,
+		return nil, nil,
 			fmt.Errorf("loop found: '%s' has been visited before: %s",
-				fixedFileName, loopMsg))
+				fixedFileName, loopMsg)
 	}
 
-	fd, err := os.Open(fixedFileName)
+	fd, err := os.Open(fixedFileName) // nolint: gosec
+	if err != nil {
+		return nil, nil, err
+	}
+
+	loc := location.New(fixedFileName)
+	loc.SetNote(fp.noteStr(inclChain))
+
+	return fd, loc, nil
+}
+
+// parseFile is called by Parse once the stats and the include chain have
+// been established. It is then called recursively to parse the file and any
+// included files.
+func (fp *FP) parseFile(filename string, inclChain location.LocChain) []error {
+	var errors = make([]error, 0)
+
+	fd, loc, err := fp.openFile(filename, inclChain)
 	if err != nil {
 		return append(errors, err)
 	}
-	defer fd.Close()
+	defer fd.Close() // nolint: errcheck
 
 	fp.stats.filesVisited++
 	scanner := bufio.NewScanner(fd)
@@ -200,7 +215,7 @@ func (fp *FP) parseFile(filename string, inclChain location.LocChain) []error {
 				continue
 			}
 
-			inclFileName = fixIncludeFileName(inclFileName, filename)
+			inclFileName = fixIncludeFileName(inclFileName, loc.Source())
 
 			errors = append(errors,
 				fp.parseFile(inclFileName, append(inclChain, *loc))...)
