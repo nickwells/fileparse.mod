@@ -3,6 +3,7 @@ package fileparse_test
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/nickwells/fileparse.mod/fileparse"
@@ -16,7 +17,10 @@ func TestEchoParser(t *testing.T) {
 	loc := location.New("testLoc")
 
 	expVal := "line"
-	ep.ParseLine(expVal, loc)
+	err := ep.ParseLine(expVal, loc)
+	if err != nil {
+		t.Error("unexpected error :", err)
+	}
 	w.Flush()
 	expVal += "\n"
 
@@ -29,7 +33,10 @@ func TestEchoParser(t *testing.T) {
 func ExampleEchoParser() {
 	var ep fileparse.EchoParser
 	loc := location.New("testLoc")
-	ep.ParseLine("line", loc)
+	err := ep.ParseLine("line", loc)
+	if err != nil {
+		fmt.Println("unexpected error :", err)
+	}
 	// Output: line
 }
 
