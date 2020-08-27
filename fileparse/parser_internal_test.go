@@ -1,52 +1,45 @@
 package fileparse
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/nickwells/testhelper.mod/testhelper"
+)
 
 func TestIsAnInclLine(t *testing.T) {
 	var np NullParser
 	fpNull := New("intro", np)
 
 	type inclTest struct {
-		line             string
-		expectedFileName string
-		expectedHasIncl  bool
+		line        string
+		expFileName string
+		expHasIncl  bool
 	}
 	testCases1 := []inclTest{
 		{"has no include directive", "", false},
 		{"#include ", "", true},
 		{"#include xxx ", "xxx", true}}
-	for _, it := range testCases1 {
-		filename, hasIncl := fpNull.isAnInclLine(it.line)
+	for _, tc := range testCases1 {
+		id := fmt.Sprintf("isAnInclLine(%q)", tc.line)
+		filename, hasIncl := fpNull.isAnInclLine(tc.line)
 
-		if filename != it.expectedFileName {
-			t.Error("isAnInclLine(", it.line, ") failed\n",
-				"expected filename: ", it.expectedFileName, "\n",
-				"got: ", filename)
-		}
-		if hasIncl != it.expectedHasIncl {
-			t.Error("isAnInclLine(", it.line, ") failed\n",
-				"expected hasIncl: ", it.expectedHasIncl, "\n",
-				"got: ", hasIncl)
-		}
+		testhelper.CmpValString(t, id, "filename", filename, tc.expFileName)
+		testhelper.CmpValBool(t, id, "hasIncl", hasIncl, tc.expHasIncl)
 	}
+
 	fpNull.SetInclKeyWord("INCLUDE")
 	testCases2 := []inclTest{
 		{"has no include directive", "", false},
 		{"INCLUDE ", "", true},
 		{"INCLUDE xxx ", "xxx", true}}
-	for _, it := range testCases2 {
-		filename, hasIncl := fpNull.isAnInclLine(it.line)
+	for _, tc := range testCases2 {
+		id := fmt.Sprintf("isAnInclLine(%q) - include keyword: 'INCLUDE'",
+			tc.line)
+		filename, hasIncl := fpNull.isAnInclLine(tc.line)
 
-		if filename != it.expectedFileName {
-			t.Error("isAnInclLine(", it.line, ") failed\n",
-				"expected filename: ", it.expectedFileName, "\n",
-				"got: ", filename)
-		}
-		if hasIncl != it.expectedHasIncl {
-			t.Error("isAnInclLine(", it.line, ") failed\n",
-				"expected hasIncl: ", it.expectedHasIncl, "\n",
-				"got: ", hasIncl)
-		}
+		testhelper.CmpValString(t, id, "filename", filename, tc.expFileName)
+		testhelper.CmpValBool(t, id, "hasIncl", hasIncl, tc.expHasIncl)
 	}
 }
 
@@ -55,8 +48,8 @@ func TestStripComment(t *testing.T) {
 	fpNull := New("intro", np)
 
 	type commentTest struct {
-		line         string
-		expectedLine string
+		line    string
+		expLine string
 	}
 
 	testCases1 := []commentTest{
@@ -66,15 +59,11 @@ func TestStripComment(t *testing.T) {
 		{"abc ", "abc "},
 	}
 
-	for _, ct := range testCases1 {
-		strippedLine := fpNull.stripComment(ct.line)
+	for _, tc := range testCases1 {
+		id := fmt.Sprintf("stripComment(%q)", tc.line)
+		stripped := fpNull.stripComment(tc.line)
 
-		if strippedLine != ct.expectedLine {
-			t.Logf("stripComment(%s)", ct.line)
-			t.Logf("\t: expected: '%s'", ct.expectedLine)
-			t.Logf("\t:      got: '%s'", strippedLine)
-			t.Error("\t: Failed")
-		}
+		testhelper.CmpValString(t, id, "stripped line", stripped, tc.expLine)
 	}
 
 	fpNull.SetCommentIntro("#")
@@ -87,14 +76,10 @@ func TestStripComment(t *testing.T) {
 		{"abc ", "abc "},
 	}
 
-	for _, ct := range testCases2 {
-		strippedLine := fpNull.stripComment(ct.line)
+	for _, tc := range testCases2 {
+		id := fmt.Sprintf("stripComment(%q) - comment intro: '#'", tc.line)
+		stripped := fpNull.stripComment(tc.line)
 
-		if strippedLine != ct.expectedLine {
-			t.Logf("stripComment(%s)", ct.line)
-			t.Logf("\t: expected: '%s'", ct.expectedLine)
-			t.Logf("\t:      got: '%s'", strippedLine)
-			t.Error("\t: Failed")
-		}
+		testhelper.CmpValString(t, id, "stripped line", stripped, tc.expLine)
 	}
 }

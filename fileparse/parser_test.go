@@ -8,6 +8,7 @@ import (
 
 	"github.com/nickwells/fileparse.mod/fileparse"
 	"github.com/nickwells/location.mod/location"
+	"github.com/nickwells/testhelper.mod/testhelper"
 )
 
 func TestEchoParser(t *testing.T) {
@@ -24,10 +25,8 @@ func TestEchoParser(t *testing.T) {
 	w.Flush()
 	expVal += "\n"
 
-	if buf.String() != expVal {
-		t.Errorf("EchoParser.ParseLine(...) failed: expected: '%s', got: '%s'",
-			expVal, buf.String())
-	}
+	testhelper.CmpValString(t, "EchoParser.ParseLine(...)", "",
+		buf.String(), expVal)
 }
 
 func ExampleEchoParser() {
@@ -45,11 +44,11 @@ func TestParse(t *testing.T) {
 	fpNull := fileparse.New("intro", np)
 
 	testCases := []struct {
-		filename            string
-		expectedErrCount    int
-		expectedFileCount   int
-		expectedLineCount   int
-		expectedParsedCount int
+		filename    string
+		expErrs     int
+		expFiles    int
+		expLines    int
+		expParsings int
 	}{
 		{"~NoSuchUser/NoSuchFile", 1, 0, 0, 0},
 		{"./testdata/NoSuchFile", 1, 0, 0, 0},
@@ -63,49 +62,23 @@ func TestParse(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
+		id := fmt.Sprintf("Parse(%q)", tc.filename)
 		errs := fpNull.Parse(tc.filename)
-		if ecount := len(errs); ecount != tc.expectedErrCount {
-			t.Error("Parse(", tc.filename, ") failed - expected: ",
-				tc.expectedErrCount, " errors, got: ", ecount, "\n",
-				"errors: ", errs)
-		}
-		if fpNull.Stats().FilesVisited() != tc.expectedFileCount {
-			t.Error("Parse(", tc.filename, ") failed - expected: ",
-				tc.expectedFileCount, " files visited, got: ",
-				fpNull.Stats().FilesVisited())
-		}
-		if fpNull.Stats().LinesRead() != tc.expectedLineCount {
-			t.Error("Parse(", tc.filename, ") failed - expected: ",
-				tc.expectedLineCount, " lines read, got: ",
-				fpNull.Stats().LinesRead())
-		}
-		if fpNull.Stats().LinesParsed() != tc.expectedParsedCount {
-			t.Error("Parse(", tc.filename, ") failed - expected: ",
-				tc.expectedParsedCount, " lines parsed, got: ",
-				fpNull.Stats().LinesParsed())
-		}
+		s := fpNull.Stats()
+		testhelper.CmpValInt(t, id, "error count", len(errs), tc.expErrs)
+		testhelper.CmpValInt(t, id, "files seen", s.FilesVisited(), tc.expFiles)
+		testhelper.CmpValInt(t, id, "lines read", s.LinesRead(), tc.expLines)
+		testhelper.CmpValInt(t, id, "parsings", s.LinesParsed(), tc.expParsings)
 	}
 }
 
-func TestStats(t *testing.T) {
+func TestEmptyStats(t *testing.T) {
 	var s fileparse.Stats
+	id := "An empty Stats structure"
 
-	if fv := s.FilesVisited(); fv != 0 {
-		t.Error("an empty Stats structure should have filesVisited: 0, has: ",
-			fv)
-	}
-	if lr := s.LinesRead(); lr != 0 {
-		t.Error("an empty Stats structure should have linesRead: 0, has: ",
-			lr)
-	}
-	if lp := s.LinesParsed(); lp != 0 {
-		t.Error("an empty Stats structure should have linesParsed: 0, has: ",
-			lp)
-	}
-	expectedStr := "files:   0   lines read:     0   parsed:     0"
-	if s := s.String(); s != expectedStr {
-		t.Error(
-			"an empty Stats structure should have a String representation of: ",
-			expectedStr, " has: ", s)
-	}
+	testhelper.CmpValInt(t, id, "FilesVisited()", s.FilesVisited(), 0)
+	testhelper.CmpValInt(t, id, "LinesRead()", s.LinesRead(), 0)
+	testhelper.CmpValInt(t, id, "LinesParsed()", s.LinesParsed(), 0)
+	expStr := "files:   0   lines read:     0   parsed:     0"
+	testhelper.CmpValString(t, id, "String representation", s.String(), expStr)
 }

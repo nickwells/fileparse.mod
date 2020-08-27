@@ -1,4 +1,4 @@
-github.com/nickwells/location.mod v1.2.7 h1:PLeVbT1maPtY8l2z2GbaA0+6eljFLJcYDh4OZ4mECFE=
-github.com/nickwells/location.mod v1.2.7/go.mod h1:4rGKegdBCWxkO3CW1vp0D22mAw0NREzPI9riMo+yr0Y=
-github.com/nickwells/testhelper.mod v1.4.1 h1:bpd/G2oBzfDOY22eineHAhOMrAmZo3Q80P3gA+Wkz+c=
-github.com/nickwells/testhelper.mod v1.4.1/go.mod h1:Ct/U2PjL0n9hGc+US6uR/s4NxSRI33NM+0ZkrDkG0XI=
+github.com/nickwells/location.mod v1.2.9 h1:p1KVfLbRUWBm5pF7vWhSEBu7Bea4KMSwG33RpLAfcqY=
+github.com/nickwells/location.mod v1.2.9/go.mod h1:dG4NraMh8YAPsSe3zdOYramVWkLfElyiP9LZrCTsdWo=
+github.com/nickwells/testhelper.mod v1.8.1 h1:EstfHLvz5E/8u8nNxg15MDNxL/ANUZamuo8Wed2d11s=
+github.com/nickwells/testhelper.mod v1.8.1/go.mod h1:Ct/U2PjL0n9hGc+US6uR/s4NxSRI33NM+0ZkrDkG0XI=
