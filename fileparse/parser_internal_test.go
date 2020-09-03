@@ -24,8 +24,8 @@ func TestIsAnInclLine(t *testing.T) {
 		id := fmt.Sprintf("isAnInclLine(%q)", tc.line)
 		filename, hasIncl := fpNull.isAnInclLine(tc.line)
 
-		testhelper.CmpValString(t, id, "filename", filename, tc.expFileName)
-		testhelper.CmpValBool(t, id, "hasIncl", hasIncl, tc.expHasIncl)
+		testhelper.DiffString(t, id, "filename", filename, tc.expFileName)
+		testhelper.DiffBool(t, id, "hasIncl", hasIncl, tc.expHasIncl)
 	}
 
 	fpNull.SetInclKeyWord("INCLUDE")
@@ -38,8 +38,8 @@ func TestIsAnInclLine(t *testing.T) {
 			tc.line)
 		filename, hasIncl := fpNull.isAnInclLine(tc.line)
 
-		testhelper.CmpValString(t, id, "filename", filename, tc.expFileName)
-		testhelper.CmpValBool(t, id, "hasIncl", hasIncl, tc.expHasIncl)
+		testhelper.DiffString(t, id, "filename", filename, tc.expFileName)
+		testhelper.DiffBool(t, id, "hasIncl", hasIncl, tc.expHasIncl)
 	}
 }
 
@@ -63,7 +63,7 @@ func TestStripComment(t *testing.T) {
 		id := fmt.Sprintf("stripComment(%q)", tc.line)
 		stripped := fpNull.stripComment(tc.line)
 
-		testhelper.CmpValString(t, id, "stripped line", stripped, tc.expLine)
+		testhelper.DiffString(t, id, "stripped line", stripped, tc.expLine)
 	}
 
 	fpNull.SetCommentIntro("#")
@@ -80,6 +80,6 @@ func TestStripComment(t *testing.T) {
 		id := fmt.Sprintf("stripComment(%q) - comment intro: '#'", tc.line)
 		stripped := fpNull.stripComment(tc.line)
 
-		testhelper.CmpValString(t, id, "stripped line", stripped, tc.expLine)
+		testhelper.DiffString(t, id, "stripped line", stripped, tc.expLine)
 	}
 }

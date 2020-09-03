@@ -25,7 +25,7 @@ func TestEchoParser(t *testing.T) {
 	w.Flush()
 	expVal += "\n"
 
-	testhelper.CmpValString(t, "EchoParser.ParseLine(...)", "",
+	testhelper.DiffString(t, "EchoParser.ParseLine(...)", "",
 		buf.String(), expVal)
 }
 
@@ -65,10 +65,10 @@ func TestParse(t *testing.T) {
 		id := fmt.Sprintf("Parse(%q)", tc.filename)
 		errs := fpNull.Parse(tc.filename)
 		s := fpNull.Stats()
-		testhelper.CmpValInt(t, id, "error count", len(errs), tc.expErrs)
-		testhelper.CmpValInt(t, id, "files seen", s.FilesVisited(), tc.expFiles)
-		testhelper.CmpValInt(t, id, "lines read", s.LinesRead(), tc.expLines)
-		testhelper.CmpValInt(t, id, "parsings", s.LinesParsed(), tc.expParsings)
+		testhelper.DiffInt(t, id, "error count", len(errs), tc.expErrs)
+		testhelper.DiffInt(t, id, "files seen", s.FilesVisited(), tc.expFiles)
+		testhelper.DiffInt(t, id, "lines read", s.LinesRead(), tc.expLines)
+		testhelper.DiffInt(t, id, "parsings", s.LinesParsed(), tc.expParsings)
 	}
 }
 
@@ -76,9 +76,9 @@ func TestEmptyStats(t *testing.T) {
 	var s fileparse.Stats
 	id := "An empty Stats structure"
 
-	testhelper.CmpValInt(t, id, "FilesVisited()", s.FilesVisited(), 0)
-	testhelper.CmpValInt(t, id, "LinesRead()", s.LinesRead(), 0)
-	testhelper.CmpValInt(t, id, "LinesParsed()", s.LinesParsed(), 0)
+	testhelper.DiffInt(t, id, "FilesVisited()", s.FilesVisited(), 0)
+	testhelper.DiffInt(t, id, "LinesRead()", s.LinesRead(), 0)
+	testhelper.DiffInt(t, id, "LinesParsed()", s.LinesParsed(), 0)
 	expStr := "files:   0   lines read:     0   parsed:     0"
-	testhelper.CmpValString(t, id, "String representation", s.String(), expStr)
+	testhelper.DiffString(t, id, "String representation", s.String(), expStr)
 }
