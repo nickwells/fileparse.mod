@@ -1,1 +1,1 @@
-#include IncludeLoopSelf
+@include IncludeLoopSelf

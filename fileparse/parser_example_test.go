@@ -29,8 +29,8 @@ func ExampleFP_SetInclKeyWord() {
 	p.Parse("testdata/example/startingFile")
 	// Output: first content line
 	// second content line
-	// #include includeFile1
-	// #include includeFile2
+	// @include includeFile1
+	// @include includeFile2
 	// last line
 }
 
@@ -43,10 +43,10 @@ func ExampleFP_SetCommentIntro() {
 	p.SetInclKeyWord("")
 	p.SetCommentIntro("")
 	p.Parse("testdata/example/startingFile")
-	// Output: // This is the first file read by the example
+	// Output: # This is the first file read by the example
 	// first content line
 	// second content line
-	// #include includeFile1
-	// #include includeFile2
+	// @include includeFile1
+	// @include includeFile2
 	// last line
 }

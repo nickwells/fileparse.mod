@@ -2,4 +2,4 @@ includeFile3 line 1
 
 
 includeFile3 line 2
-// a comment that will be ignored
+# a comment that will be ignored

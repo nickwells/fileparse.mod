@@ -16,8 +16,8 @@ import (
 // DefaultCommentIntro is the default comment introducer - everything from
 // this to the end of the line is ignored
 const (
-	DefaultInclKeyWord  string = "#include"
-	DefaultCommentIntro string = "//"
+	DefaultInclKeyWord  string = "@include"
+	DefaultCommentIntro string = "#"
 )
 
 // FP records the configuration of the file parser

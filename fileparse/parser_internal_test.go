@@ -18,8 +18,8 @@ func TestIsAnInclLine(t *testing.T) {
 	}
 	testCases1 := []inclTest{
 		{"has no include directive", "", false},
-		{"#include ", "", true},
-		{"#include xxx ", "xxx", true}}
+		{"@include ", "", true},
+		{"@include xxx ", "xxx", true}}
 	for _, tc := range testCases1 {
 		id := fmt.Sprintf("isAnInclLine(%q)", tc.line)
 		filename, hasIncl := fpNull.isAnInclLine(tc.line)
@@ -53,8 +53,8 @@ func TestStripComment(t *testing.T) {
 	}
 
 	testCases1 := []commentTest{
-		{"abc // test", "abc "},
-		{" // test", " "},
+		{"abc # test", "abc "},
+		{" # test", " "},
 		{"   ", "   "},
 		{"abc ", "abc "},
 	}
@@ -66,12 +66,12 @@ func TestStripComment(t *testing.T) {
 		testhelper.DiffString(t, id, "stripped line", stripped, tc.expLine)
 	}
 
-	fpNull.SetCommentIntro("#")
+	fpNull.SetCommentIntro("//")
 	testCases2 := []commentTest{
-		{"abc // test", "abc // test"},
-		{" // test", " // test"},
-		{"abc # test", "abc "},
-		{" # test", " "},
+		{"abc # test", "abc # test"},
+		{" # test", " # test"},
+		{"abc // test", "abc "},
+		{" // test", " "},
 		{"   ", "   "},
 		{"abc ", "abc "},
 	}

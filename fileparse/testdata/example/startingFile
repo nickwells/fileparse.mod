@@ -1,8 +1,8 @@
-// This is the first file read by the example
+# This is the first file read by the example
 first content line
 second content line
 
-#include includeFile1
-#include includeFile2
+@include includeFile1
+@include includeFile2
 
 last line
