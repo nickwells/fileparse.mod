@@ -45,7 +45,8 @@ func New(desc string, lp LineParser) *FP {
 		fileType:    desc,
 		lineParser:  lp,
 		cmtIntro:    DefaultCommentIntro,
-		inclKeyWord: DefaultInclKeyWord}
+		inclKeyWord: DefaultInclKeyWord,
+	}
 }
 
 // PassBlankLines will change the behaviour of the Parser so that blank lines
@@ -183,7 +184,7 @@ func (fp *FP) openFile(filename string, inclChain location.LocChain) (
 // been established. It is then called recursively to parse the file and any
 // included files.
 func (fp *FP) parseFile(filename string, inclChain location.LocChain) []error {
-	var errors = make([]error, 0)
+	errors := make([]error, 0)
 
 	fd, loc, err := fp.openFile(filename, inclChain)
 	if err != nil {

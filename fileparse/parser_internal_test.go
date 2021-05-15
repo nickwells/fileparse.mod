@@ -19,7 +19,8 @@ func TestIsAnInclLine(t *testing.T) {
 	testCases1 := []inclTest{
 		{"has no include directive", "", false},
 		{"@include ", "", true},
-		{"@include xxx ", "xxx", true}}
+		{"@include xxx ", "xxx", true},
+	}
 	for _, tc := range testCases1 {
 		id := fmt.Sprintf("isAnInclLine(%q)", tc.line)
 		filename, hasIncl := fpNull.isAnInclLine(tc.line)
@@ -32,7 +33,8 @@ func TestIsAnInclLine(t *testing.T) {
 	testCases2 := []inclTest{
 		{"has no include directive", "", false},
 		{"INCLUDE ", "", true},
-		{"INCLUDE xxx ", "xxx", true}}
+		{"INCLUDE xxx ", "xxx", true},
+	}
 	for _, tc := range testCases2 {
 		id := fmt.Sprintf("isAnInclLine(%q) - include keyword: 'INCLUDE'",
 			tc.line)
