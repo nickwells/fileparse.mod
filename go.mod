@@ -1,8 +1,8 @@
 module github.com/nickwells/fileparse.mod
 
 require (
-	github.com/nickwells/location.mod v1.2.19
-	github.com/nickwells/testhelper.mod v1.15.1
+	github.com/nickwells/location.mod v1.2.20
+	github.com/nickwells/testhelper.mod v1.16.0
 )
 
 go 1.13
