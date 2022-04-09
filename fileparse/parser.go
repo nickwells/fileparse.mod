@@ -154,8 +154,8 @@ func (fp *FP) noteStr(inclChain location.LocChain) string {
 // openFile normalises the file name and checks the include chain for
 // loops. Then it creates a new location object and opens the file. Any
 // errors are returned.
-func (fp *FP) openFile(filename string, inclChain location.LocChain) (
-	*os.File, *location.L, error) {
+func (fp *FP) openFile(filename string, inclChain location.LocChain,
+) (*os.File, *location.L, error) {
 	fixedFileName, err := FixFileName(filename)
 	if err != nil {
 		return nil, nil, fmt.Errorf("%s: Couldn't expand: '%s' : %s",

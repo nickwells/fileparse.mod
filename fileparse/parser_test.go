@@ -8,7 +8,7 @@ import (
 
 	"github.com/nickwells/fileparse.mod/fileparse"
 	"github.com/nickwells/location.mod/location"
-	"github.com/nickwells/testhelper.mod/testhelper"
+	"github.com/nickwells/testhelper.mod/v2/testhelper"
 )
 
 func TestEchoParser(t *testing.T) {
@@ -27,16 +27,6 @@ func TestEchoParser(t *testing.T) {
 
 	testhelper.DiffString(t, "EchoParser.ParseLine(...)", "",
 		buf.String(), expVal)
-}
-
-func ExampleEchoParser() {
-	var ep fileparse.EchoParser
-	loc := location.New("testLoc")
-	err := ep.ParseLine("line", loc)
-	if err != nil {
-		fmt.Println("unexpected error :", err)
-	}
-	// Output: line
 }
 
 func TestParse(t *testing.T) {
