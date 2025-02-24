@@ -84,8 +84,9 @@ func (fp FP) stripComment(s string) string {
 		return s
 	}
 
-	parts := strings.SplitN(s, fp.cmtIntro, 2)
-	return parts[0]
+	beforeComment, _, _ := strings.Cut(s, fp.cmtIntro)
+
+	return beforeComment
 }
 
 // trimSpace will remove any white space from the beginning or end of the
@@ -94,6 +95,7 @@ func (fp FP) trimSpace(s string) string {
 	if fp.dontTrim {
 		return s
 	}
+
 	return strings.TrimSpace(s)
 }
 
@@ -112,6 +114,7 @@ func (fp FP) isAnInclLine(line string) (inclFileName string, hasIncl bool) {
 		inclFileName = strings.TrimPrefix(line, fp.inclKeyWord)
 		inclFileName = strings.TrimSpace(inclFileName)
 	}
+
 	return inclFileName, hasIncl
 }
 
@@ -129,6 +132,7 @@ func (fp FP) isAnInclLine(line string) (inclFileName string, hasIncl bool) {
 func (fp *FP) Parse(filename string) []error {
 	fp.stats = Stats{} // reset the stats each time we parse
 	inclChain := location.NewChain()
+
 	return fp.parseFile(filename, inclChain)
 }
 
@@ -139,6 +143,7 @@ func fixIncludeFileName(inclFileName, currentFileName string) string {
 	if filepath.IsAbs(inclFileName) {
 		return inclFileName
 	}
+
 	return filepath.Join(filepath.Dir(currentFileName), inclFileName)
 }
 
@@ -148,6 +153,7 @@ func (fp *FP) noteStr(inclChain location.LocChain) string {
 	if s := inclChain.String(); s != "" {
 		note += " : " + s
 	}
+
 	return note
 }
 
@@ -158,18 +164,18 @@ func (fp *FP) openFile(filename string, inclChain location.LocChain,
 ) (*os.File, *location.L, error) {
 	fixedFileName, err := FixFileName(filename)
 	if err != nil {
-		return nil, nil, fmt.Errorf("%s: Couldn't expand: '%s' : %s",
+		return nil, nil, fmt.Errorf("%s: Couldn't expand: %q : %s",
 			fp.noteStr(inclChain), filename, err.Error())
 	}
 
 	loopFound, loopMsg := inclChain.HasLoop(fixedFileName)
 	if loopFound {
 		return nil, nil,
-			fmt.Errorf("loop found: '%s' has been visited before: %s",
+			fmt.Errorf("loop found: %q has been visited before: %s",
 				fixedFileName, loopMsg)
 	}
 
-	fd, err := os.Open(fixedFileName) // nolint: gosec
+	fd, err := os.Open(fixedFileName)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -190,7 +196,7 @@ func (fp *FP) parseFile(filename string, inclChain location.LocChain) []error {
 	if err != nil {
 		return append(errors, err)
 	}
-	defer fd.Close() // nolint: errcheck
+	defer fd.Close()
 
 	fp.stats.filesVisited++
 	scanner := bufio.NewScanner(fd)
@@ -198,6 +204,7 @@ func (fp *FP) parseFile(filename string, inclChain location.LocChain) []error {
 	for scanner.Scan() {
 		fp.stats.linesRead++
 		originalLine := scanner.Text()
+
 		loc.Incr()
 
 		line := fp.stripComment(originalLine)
@@ -213,6 +220,7 @@ func (fp *FP) parseFile(filename string, inclChain location.LocChain) []error {
 			if inclFileName == "" {
 				loc.SetContent(originalLine)
 				errors = append(errors, loc.Errorf("Missing include file name"))
+
 				continue
 			}
 
@@ -220,6 +228,7 @@ func (fp *FP) parseFile(filename string, inclChain location.LocChain) []error {
 
 			errors = append(errors,
 				fp.parseFile(inclFileName, append(inclChain, *loc))...)
+
 			continue
 		}
 

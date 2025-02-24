@@ -12,6 +12,7 @@ import (
 // appropriate user
 func FixFileName(fileName string) (string, error) {
 	var err error
+
 	fixedFileName := filepath.Clean(fileName)
 
 	if fixedFileName[0] == '~' {
@@ -20,6 +21,7 @@ func FixFileName(fileName string) (string, error) {
 		pathParts[0], err = ExpandTilde(pathParts[0])
 		fixedFileName = filepath.Join(pathParts...)
 	}
+
 	return fixedFileName, err
 }
 
@@ -29,6 +31,7 @@ func FixFileName(fileName string) (string, error) {
 // following name it represents the home directory of the named user.
 func ExpandTilde(tildeStr string) (string, error) {
 	var usr *user.User
+
 	var err error
 
 	if tildeStr == "~" {
@@ -37,8 +40,10 @@ func ExpandTilde(tildeStr string) (string, error) {
 		userName := tildeStr[1:]
 		usr, err = user.Lookup(userName)
 	}
+
 	if err != nil {
 		return "", err
 	}
+
 	return usr.HomeDir, err
 }

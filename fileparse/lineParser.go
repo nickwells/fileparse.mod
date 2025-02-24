@@ -43,7 +43,9 @@ func (ep EchoParser) ParseLine(line string, _ *location.L) error {
 	if ep.Writer == nil {
 		ep.Writer = os.Stdout
 	}
+
 	line += "\n"
 	_, err := ep.Writer.Write([]byte(line))
+
 	return err
 }

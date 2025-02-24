@@ -18,11 +18,14 @@ func TestEchoParser(t *testing.T) {
 	loc := location.New("testLoc")
 
 	expVal := "line"
+
 	err := ep.ParseLine(expVal, loc)
 	if err != nil {
 		t.Error("unexpected error :", err)
 	}
+
 	w.Flush()
+
 	expVal += "\n"
 
 	testhelper.DiffString(t, "EchoParser.ParseLine(...)", "",
@@ -55,6 +58,7 @@ func TestParse(t *testing.T) {
 		id := fmt.Sprintf("Parse(%q)", tc.filename)
 		errs := fpNull.Parse(tc.filename)
 		s := fpNull.Stats()
+
 		testhelper.DiffInt(t, id, "error count", len(errs), tc.expErrs)
 		testhelper.DiffInt(t, id, "files seen", s.FilesVisited(), tc.expFiles)
 		testhelper.DiffInt(t, id, "lines read", s.LinesRead(), tc.expLines)
@@ -64,11 +68,14 @@ func TestParse(t *testing.T) {
 
 func TestEmptyStats(t *testing.T) {
 	var s fileparse.Stats
+
 	id := "An empty Stats structure"
 
 	testhelper.DiffInt(t, id, "FilesVisited()", s.FilesVisited(), 0)
 	testhelper.DiffInt(t, id, "LinesRead()", s.LinesRead(), 0)
 	testhelper.DiffInt(t, id, "LinesParsed()", s.LinesParsed(), 0)
+
 	expStr := "files:   0   lines read:     0   parsed:     0"
+
 	testhelper.DiffString(t, id, "String representation", s.String(), expStr)
 }

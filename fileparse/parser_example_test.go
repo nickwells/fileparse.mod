@@ -60,7 +60,9 @@ func ExampleFP_SetCommentIntro() {
 // echos the lines it parses.
 func ExampleEchoParser() {
 	var ep fileparse.EchoParser
+
 	loc := location.New("testLoc")
+
 	err := ep.ParseLine("line", loc)
 	if err != nil {
 		fmt.Println("unexpected error :", err)
