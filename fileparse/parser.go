@@ -175,7 +175,7 @@ func (fp *FP) openFile(filename string, inclChain location.LocChain,
 				fixedFileName, loopMsg)
 	}
 
-	fd, err := os.Open(fixedFileName)
+	fd, err := os.Open(fixedFileName) //nolint:gosec
 	if err != nil {
 		return nil, nil, err
 	}
