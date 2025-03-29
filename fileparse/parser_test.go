@@ -24,7 +24,10 @@ func TestEchoParser(t *testing.T) {
 		t.Error("unexpected error :", err)
 	}
 
-	w.Flush()
+	err = w.Flush()
+	if err != nil {
+		t.Error("could not flush the buffer:", err)
+	}
 
 	expVal += "\n"
 
