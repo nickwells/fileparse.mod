@@ -10,13 +10,12 @@ import (
 	"github.com/nickwells/location.mod/location"
 )
 
-// DefaultInclKeyword is the value which introduces the name of a file to be
-// read and substituted into the current file
-//
-// DefaultCommentIntro is the default comment introducer - everything from
-// this to the end of the line is ignored
 const (
-	DefaultInclKeyWord  string = "@include"
+	// DefaultInclKeyWord is the value which introduces the name of a file to be
+	// read and substituted into the current file
+	DefaultInclKeyWord string = "@include"
+	// DefaultCommentIntro is the default comment introducer - everything from
+	// this to the end of the line is ignored
 	DefaultCommentIntro string = "#"
 )
 
